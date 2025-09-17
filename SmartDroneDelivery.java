@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Scanner;
 
 class DeliveryNode {
     String item;
@@ -28,6 +28,7 @@ class DroneDeliveryQueue {
             }
             ptr.next = newNode;
         }
+        System.out.println("Added Delivery: " + item + " (Priority " + priority + ", Location: " + location + ")");
     }
 
     public void dispatchDelivery() {
@@ -57,7 +58,7 @@ class DroneDeliveryQueue {
         }
 
         System.out.println("Dispatching: " + highest.item +
-                           " (Priority: " + highest.priority +
+                           " (Priority " + highest.priority +
                            ") to " + highest.location);
     }
 
@@ -70,23 +71,56 @@ class DroneDeliveryQueue {
         DeliveryNode ptr = start;
         while (ptr != null) {
             System.out.println("- " + ptr.item +
-                               " (Priority: " + ptr.priority +
+                               " (Priority " + ptr.priority +
                                ", Location: " + ptr.location + ")");
             ptr = ptr.next;
         }
     }
 }
 
-public class SmartDroneDelivery {
+public class SmartDroneSystemUserInput{
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         DroneDeliveryQueue queue = new DroneDeliveryQueue();
 
-        queue.addDelivery("Medicines", 1, "Sector 5");
-        queue.addDelivery("Fresh Vegetables", 2, "Sector 9");
-        queue.addDelivery("Lab Samples", 1, "Sector 3");
+        while (true) {
+            System.out.println("\n--- Drone Delivery System Menu ---");
+            System.out.println("1. Add Delivery");
+            System.out.println("2. Dispatch Delivery");
+            System.out.println("3. Display Pending Deliveries");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
 
-        queue.displayDeliveries();
-        queue.dispatchDelivery();
-        queue.displayDeliveries();
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter item name: ");
+                    String item = sc.nextLine();
+                    System.out.print("Enter priority (smaller = higher priority): ");
+                    int priority = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Enter location: ");
+                    String location = sc.nextLine();
+                    queue.addDelivery(item, priority, location);
+                    break;
+
+                case 2:
+                    queue.dispatchDelivery();
+                    break;
+
+                case 3:
+                    queue.displayDeliveries();
+                    break;
+
+                case 4:
+                    System.out.println("Exiting... Goodbye!");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice, try again.");
+            }
+        }
     }
 }
