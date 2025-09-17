@@ -1,8 +1,11 @@
+import java.util.*;
+
 class DeliveryNode {
     String item;
     int priority;
     String location;
     DeliveryNode next;
+
     DeliveryNode(String item, int priority, String location) {
         this.item = item;
         this.priority = priority;
@@ -10,8 +13,10 @@ class DeliveryNode {
         this.next = null;
     }
 }
+
 class DroneDeliveryQueue {
     private DeliveryNode start = null;
+
     public void addDelivery(String item, int priority, String location) {
         DeliveryNode newNode = new DeliveryNode(item, priority, location);
         if (start == null) {
@@ -24,14 +29,38 @@ class DroneDeliveryQueue {
             ptr.next = newNode;
         }
     }
+
     public void dispatchDelivery() {
         if (start == null) {
             System.out.println("No deliveries to dispatch");
             return;
         }
-        System.out.println("Dispatching: " + start.item + " to " + start.location);
-        start = start.next;
+
+        DeliveryNode ptr = start;
+        DeliveryNode prev = null;
+        DeliveryNode highest = start;
+        DeliveryNode highestPrev = null;
+
+        while (ptr != null) {
+            if (ptr.priority < highest.priority) {
+                highest = ptr;
+                highestPrev = prev;
+            }
+            prev = ptr;
+            ptr = ptr.next;
+        }
+
+        if (highestPrev == null) {
+            start = highest.next;
+        } else {
+            highestPrev.next = highest.next;
+        }
+
+        System.out.println("Dispatching: " + highest.item +
+                           " (Priority: " + highest.priority +
+                           ") to " + highest.location);
     }
+
     public void displayDeliveries() {
         if (start == null) {
             System.out.println("No pending deliveries");
@@ -47,12 +76,15 @@ class DroneDeliveryQueue {
         }
     }
 }
+
 public class SmartDroneDelivery {
     public static void main(String[] args) {
         DroneDeliveryQueue queue = new DroneDeliveryQueue();
+
         queue.addDelivery("Medicines", 1, "Sector 5");
         queue.addDelivery("Fresh Vegetables", 2, "Sector 9");
         queue.addDelivery("Lab Samples", 1, "Sector 3");
+
         queue.displayDeliveries();
         queue.dispatchDelivery();
         queue.displayDeliveries();
