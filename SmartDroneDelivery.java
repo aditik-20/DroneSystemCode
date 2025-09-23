@@ -4,70 +4,71 @@ class DeliveryNode {
     String item;
     int priority;
     String location;
-    DeliveryNode prev, next;
+    DeliveryNode next;
 
     DeliveryNode(String item, int priority, String location) {
         this.item = item;
         this.priority = priority;
         this.location = location;
-        this.prev = this.next = null;
+        this.next = null;
     }
 }
 
-class DroneDeliveryDLL {
-    private DeliveryNode head = null, tail = null;
+class DroneDeliveryQueue {
+    private DeliveryNode start = null;
 
     public void addDelivery(String item, int priority, String location) {
         DeliveryNode newNode = new DeliveryNode(item, priority, location);
-
-        if (head == null) {
-            head = tail = newNode;
-        } else if (priority < head.priority) {
-            newNode.next = head;
-            head.prev = newNode;
-            head = newNode;
+        if (start == null) {
+            start = newNode;
         } else {
-            DeliveryNode ptr = head;
-            while (ptr.next != null && ptr.next.priority <= priority) {
+            DeliveryNode ptr = start;
+            while (ptr.next != null) {
                 ptr = ptr.next;
             }
-            newNode.next = ptr.next;
-            if (ptr.next != null) {
-                ptr.next.prev = newNode;
-            } else {
-                tail = newNode;
-            }
             ptr.next = newNode;
-            newNode.prev = ptr;
         }
-        System.out.println("Added Delivery: " + item + 
-                           " (Priority " + priority + 
-                           ", Location: " + location + ")");
+        System.out.println("Added Delivery: " + item + " (Priority " + priority + ", Location: " + location + ")");
     }
 
     public void dispatchDelivery() {
-        if (head == null) {
+        if (start == null) {
             System.out.println("No deliveries to dispatch");
             return;
         }
-        System.out.println("Dispatching: " + head.item + 
-                           " (Priority " + head.priority + 
-                           ") to " + head.location);
-        head = head.next;
-        if (head != null) {
-            head.prev = null;
-        } else {
-            tail = null;
+
+        DeliveryNode ptr = start;
+        DeliveryNode prev = null;
+        DeliveryNode highest = start;
+        DeliveryNode highestPrev = null;
+
+        while (ptr != null) {
+            if (ptr.priority < highest.priority) {
+                highest = ptr;
+                highestPrev = prev;
+            }
+            prev = ptr;
+            ptr = ptr.next;
         }
+
+        if (highestPrev == null) {
+            start = highest.next;
+        } else {
+            highestPrev.next = highest.next;
+        }
+
+        System.out.println("Dispatching: " + highest.item +
+                           " (Priority " + highest.priority +
+                           ") to " + highest.location);
     }
 
     public void displayDeliveries() {
-        if (head == null) {
+        if (start == null) {
             System.out.println("No pending deliveries");
             return;
         }
         System.out.println("Pending Deliveries:");
-        DeliveryNode ptr = head;
+        DeliveryNode ptr = start;
         while (ptr != null) {
             System.out.println("- " + ptr.item +
                                " (Priority " + ptr.priority +
@@ -77,10 +78,10 @@ class DroneDeliveryDLL {
     }
 }
 
-public class SmartDroneSystemDLL {
+public class SmartDroneSystemUserInput{
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        DroneDeliveryDLL queue = new DroneDeliveryDLL();
+        DroneDeliveryQueue queue = new DroneDeliveryQueue();
 
         while (true) {
             System.out.println("\n--- Drone Delivery System Menu ---");
