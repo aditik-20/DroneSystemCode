@@ -81,7 +81,7 @@ class DroneDelivery {
 public class SmartDroneSystemUserInput{
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        DroneDeliveryQueue queue = new DroneDeliveryQueue();
+        DroneDelivery queue = new DroneDelivery();
 
         while (true) {
             System.out.println("\n--- Drone Delivery System Menu ---");
@@ -124,3 +124,4 @@ public class SmartDroneSystemUserInput{
         }
     }
 }
+
