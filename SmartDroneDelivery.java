@@ -14,7 +14,7 @@ class DeliveryNode {
     }
 }
 
-class DroneDeliveryQueue {
+class DroneDelivery {
     private DeliveryNode start = null;
 
     public void addDelivery(String item, int priority, String location) {
